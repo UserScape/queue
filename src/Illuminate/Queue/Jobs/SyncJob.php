@@ -1,15 +1,8 @@
 <?php namespace Illuminate\Queue\Jobs;
 
-use Illuminate\Container;
+use Laravel\IoC;
 
 class SyncJob extends Job {
-
-	/**
-	 * The IoC container instance.
-	 *
-	 * @var Illuminate\Container
-	 */
-	protected $container;
 
 	/**
 	 * The class name of the job.
@@ -28,16 +21,14 @@ class SyncJob extends Job {
 	/**
 	 * Create a new job instance.
 	 *
-	 * @param  Illuminate\Container  $container
 	 * @param  string  $job
 	 * @param  string  $data
 	 * @return void
 	 */
-	public function __construct(Container $container, $job, $data = '')
+	public function __construct($job, $data = '')
 	{
 		$this->job = $job;
 		$this->data = $data;
-		$this->container = $container;
 	}
 
 	/**
@@ -47,7 +38,7 @@ class SyncJob extends Job {
 	 */
 	public function fire()
 	{
-		$this->instance = $this->container->make($this->job);
+		$this->instance = IoC::resolve($this->job);
 
 		$this->instance->fire($this, unserialize($this->data));
 	}

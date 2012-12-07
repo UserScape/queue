@@ -32,7 +32,7 @@ class SyncQueue extends Queue implements QueueInterface {
 	 */
 	protected function resolveJob($job, $data)
 	{
-		return new Jobs\SyncJob($this->container, $job, $data);
+		return new Jobs\SyncJob($job, $data);
 	}
 
 }
