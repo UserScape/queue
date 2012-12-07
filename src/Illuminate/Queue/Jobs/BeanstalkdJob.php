@@ -1,17 +1,10 @@
 <?php namespace Illuminate\Queue\Jobs;
 
 use Pheanstalk;
+use Laravel\IoC;
 use Pheanstalk_Job;
-use Illuminate\Container;
 
 class BeanstalkdJob extends Job {
-
-	/**
-	 * The IoC container instance.
-	 *
-	 * @var Illuminate\Container
-	 */
-	protected $container;
 
 	/**
 	 * The Pheanstalk instance.
@@ -30,13 +23,11 @@ class BeanstalkdJob extends Job {
 	/**
 	 * Create a new job instance.
 	 *
-	 * @param  Illuminate\Container  $container
 	 * @param  Pheanstalk  $pheanstalk
 	 * @param  Pheanstalk_Job  $job
 	 * @return void
 	 */
-	public function __construct(Container $container,
-                                Pheanstalk $pheanstalk,
+	public function __construct(Pheanstalk $pheanstalk,
                                 Pheanstalk_Job $job)
 	{
 		$this->job = $job;
@@ -56,7 +47,7 @@ class BeanstalkdJob extends Job {
 		// Once we have the message payload, we can create the given class and fire
 		// it off with the given data. The data is in the messages serialized so
 		// we will unserialize it and pass into the jobs in its original form.
-		$instance = $this->container->make($payload['job']);
+		$instance = IoC::resolve($payload['job']);
 
 		$instance->fire($this, $payload['data']);
 	}
@@ -82,16 +73,6 @@ class BeanstalkdJob extends Job {
 		$priority = Pheanstalk::DEFAULT_PRIORITY;
 
 		$this->pheanstalk->release($this->job, $priority, $delay);
-	}
-
-	/**
-	 * Get the IoC container instance.
-	 *
-	 * @return Illuminate\Container
-	 */
-	public function getContainer()
-	{
-		return $this->container;
 	}
 
 	/**

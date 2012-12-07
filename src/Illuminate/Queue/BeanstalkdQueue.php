@@ -59,7 +59,7 @@ class BeanstalkdQueue extends Queue implements QueueInterface {
 
 		if ( ! is_null($job))
 		{
-			return new BeanstalkdJob($this->container, $this->pheanstalk, $job);
+			return new BeanstalkdJob($this->pheanstalk, $job);
 		}
 	}
 
